@@ -1,0 +1,60 @@
+
+<div class="navbar navbar-default" , style="background:#d9edf7"> 
+        <ul class="col-md-2">
+        <h4>Hello, <%= current_voter.email %></h4>
+      </ul>
+<ul class="nav nav-pills col-md-2" style="float:right">      
+  <li role="presentation" class="active"><%= link_to 'Home', candidates_path , :class=> "btn btn-primary "%></li>
+  <li role="presentation" class="active">  <%=link_to("Log Out" , destroy_voter_session_path , :method => :delete , :class=> "btn btn-primary" ,:style=>"float:right") %></li>
+
+</ul>
+       </div>
+
+<div class="jombotron container">
+  <%= paginate @candidates%>
+    <% @candidates.each do |candidate| %>
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title", style="font-size:36px;"><%= candidate.name %></h3>
+    <h6 style="font-size:16px;"><%= link_to 'Profile' ,candidate %></h6>
+  </div>
+  <div class="panel-body">
+    
+       
+  <div class="progress">
+
+  <%- percent = (Voter.where('candidate_id' => candidate.id).length.to_f / @voter_all.to_f) * 100 %>
+  <%- width = "width:#{percent}%" %>
+  <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style=<%= width %> >
+  <%= Voter.where('candidate_id' => candidate.id).length%> / <%= @voter_all %>
+  </div>
+</div>
+<div class="alert alert-success" role="alert">
+          PLAN :  <%= candidate.plan %>
+          </div>
+
+
+  <% if current_voter.id == 1%>
+       
+        <%= link_to 'Destroy', candidate, method: :delete, data: { confirm: 'Are you sure?' } , :class=> "btn btn-danger",:style=>"float:right" %>
+
+<%end%>
+      
+       <% if current_voter.candidate == nil %>
+          <button type="button" class="btn btn-success" style="float:left">  <%= link_to 'Vote' ,  vote_candidate_path(candidate.id) %> </td> </button>
+        <%end%>
+
+
+  </div>
+</div>        
+    <% end %>
+
+<% if current_voter.id == 1 %>
+<%= link_to 'New Candidate', new_candidate_path %>
+<%end%>
+</div>
+
+
+
+

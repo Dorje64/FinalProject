@@ -1,0 +1,109 @@
+<div class="navbar navbar-default" , style="background:#d9edf7"> 
+        <ul class="col-md-2">
+        <h4>Hello, <%= current_voter.email %></h4>
+      </ul>
+<ul class="nav nav-pills col-md-2" style="float:right">      
+  <li role="presentation" class="active"><%= link_to 'Home', candidates_path , :class=> "btn btn-primary "%></li>
+  <li role="presentation" class="active">  <%=link_to("Log Out" , destroy_voter_session_path , :method => :delete , :class=> "btn btn-primary" ,:style=>"float:right") %></li>
+
+</ul>
+       </div>
+
+<p id="notice"><%= notice %></p>
+
+<div class="jombotron container-fluid row">
+<div class="col-md-4">
+
+
+<div class="panel panel-default">
+  <!-- Default panel contents -->
+  <div class="panel-body">
+
+<%=image_tag(@candidate.image.url , :class => "img_responsive img-circle center-block" , :style=> "width:160px; height:160px; align-content:center")%>
+  
+  </div>
+
+  <!-- List group -->
+  <ul class="list-group">
+    <li class="list-group-item">
+    <div class="glyphicon glyphicon-user"></div>
+        <strong >Name:</strong>
+          <%= @candidate.name %>
+        </li>
+    <li class="list-group-item">
+    <div class="glyphicon glyphicon-flag"></div>
+     <strong>Plan:</strong>
+  <%= @candidate.plan %>
+
+  </li>
+    <li class="list-group-item">
+    <div class="glyphicon glyphicon-home"></div>
+      <strong>Location:</strong>
+        <%= @candidate.loaction %>
+    </li>
+  </ul>
+</div>
+
+</div>
+<div class="col-md-8">
+
+
+<%= form_for([@candidate,@comment]) do |f| %>
+    <% if @comment.errors.any? %>
+        <div id="error_explanation">
+          <h2><%= pluralize(@comment.errors.count, "error") %> prohibited this comment from being saved:</h2>
+
+          <ul>
+            <% @comment.errors.full_messages.each do |message| %>
+                <li><%= message %></li>
+            <% end %>
+          </ul>
+        </div>
+    <% end %>
+
+
+    <div class="form-inline form-group field col-md-10">
+
+        <%= f.text_area :content, :class=>"form-control fixed" ,cols: 90, rows:1,  :placeholder=>"Your comments" %>
+        <%= f.hidden_field :candidate_id ,value: @candidate.id %>
+
+        <%= f.hidden_field :voter_id, value: current_voter.id%>
+
+
+        <%= f.submit  :value=> "SAY IT" ,:class=>"form-control action btn btn-primary  "  %>
+      </div>
+<% end %>
+
+
+<div class ="col-md-10">
+
+<%= paginate @c %>
+<% @c.each do |comment| %>
+
+   <div class="panel panel-primary">
+  <div class="panel-body">
+  <%- @email = Voter.find(comment.voter_id).email%>
+        <b><%= @email %> :</b>
+        	<span style="width:auto">
+  	<%= time_ago_in_words(comment.created_at)%> ago</span>
+
+  </div>
+  <div class="panel-footer">
+  	<p class=""><%= comment.content %> </p> 
+  
+
+  </div>
+</div>
+
+
+<%end%>
+
+
+
+<%link_to 'Edit', edit_candidate_path(@candidate)%>
+</div>
+
+</div>
+
+<%#= link_to 'Edit', edit_candidate_path(@candidate) %> 
+
